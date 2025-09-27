@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <title>WizzArt</title>
+  <script src="script.js" defer></script> 
+
+</head>
+
+<body>
+  <!-- HEADER DESIGN -->
+  <header class="header">
+    <nav class="navbar">
+      <div class="navelement">
+        <a href="#WizzArtChamber" class="active">Wizz Art Chamber</a>
+        <a href="#magic_forge">Magic Forge</a>
+        <a href="#spellbook">Spellbook</a>
+      </div>
+    </nav>
+  </header>
+      
+  <!-- HOME SECTION DESIGN -->
+  <section class="WizzArtChamber" id="WizzArtChamber">
+    <div class="section-background"></div>
+    <div class="section-content">
+      <h3>Welcome <br>to the <span>WizzArtChamber</span></h3>
+      <p>You've entered the WizzArtChamber – your personal chamber of enchantments, where magic meets imagination</p>
+        <a href="#magic_forge" class="btn" id="read-more-btn">Let's GO</a>
+    </div>
+    
+  </section>
+
+  <!-- ABOUT SECTION DESIGN -->
+  <section class="magic_forge" id="magic_forge">
+    <div class="section-background"></div>
+    <div class="section-content">
+      <h2 class="heading">Magic <span>Forge</span></h2>
+      <p>Unleash your creativity and let the magic unfold!<br>Simply enter your magical vision, and I will conjure it into reality.</p>
+
+      <form action="#" class="generate-form">
+        <input type="text" class="prompt-input" placeholder="Enter your magical vision here..." required> 
+        <div class="controls">
+            <select class="img-quantity">
+                <option value="1">1 Image</option>
+                <option value="2">2 Images</option>
+                <option value="3">3 Images</option>
+                <option value="4" selected>4 Images</option>
+            </select>
+            <button type="submit" class="generate-btn">Generate</button>
+        </div>
+      </form>
+      <a href="#spellbook" class="btn">View Spellbook</a>
+    </div>
+  </section>
+
+  <!-- SPELLBOOK SECTION DESIGN -->
+  <section class="spellbook-section" id="spellbook">
+    <div class="section-content">
+      <h2 class="heading">The <span>Spellbook</span></h2>
+      <h3>All your summoned artworks reside here.</h3>
+      <p>In this mystical archive, you'll soon find your favorite creations—saved spells, enchanted prompts, and visual wonders conjured by your imagination.</p>
+    </div>
+    <div class="image-gallery">
+      <div class="img-card">
+          <img src="img/img1.jpeg" alt="image">
+          <a href="#" class="download-btn"></a>
+      </div>
+      <div class="img-card">
+          <img src="img/img2.jpeg" alt="image">
+          <a href="#" class="download-btn"></a>
+      </div>
+      <div class="img-card">
+          <img src="img/img3.jpeg" alt="image">
+          <a href="#" class="download-btn"></a>
+      </div>
+      <div class="img-card">
+          <img src="img/img4.jpeg" alt="image">
+          <a href="#" class="download-btn"></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER SECTION -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-icon">
+        © 2025 WizzArtChamber. All rights reserved | Designed by
+        <a href="https://linkedin.com/in/arun-pratap-singh-944491292" target="_blank"><span class="linkedin">Arun Pratap Singh</span></a>
+        <p class="tagline">Built with <span class="heart">♥</span> by ArunTech</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
