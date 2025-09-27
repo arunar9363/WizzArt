@@ -1,1 +1,1 @@
-# WixxArt
+# WizzArt
