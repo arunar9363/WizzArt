@@ -213,7 +213,8 @@ h2.heading {
 }
 
 .section-content .prompt-input{
-  width: 100%;
+  flex-grow: 1; /* This tells it to fill the available space */
+  min-width: 0; /* Prevents overflow in some flexbox cases */
   height: 100%;
   border: none;
   outline: none;
@@ -302,7 +303,6 @@ h2.heading {
   opacity: 0.8;
   transition: opacity 0.3s ease;
   border-radius: 50%;
-  /* display: none; */
 }
 
 .image-gallery .img-card .download-btn:hover {
@@ -312,9 +312,8 @@ h2.heading {
   display: flex;
   box-shadow: 0 10px 20px #ffcc00;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-
 }
-/* Add these styles to your style.css file */
+
 .img-card.loading {
   background-color: rgba(0, 0, 0, 0.2);
   display: flex;
@@ -416,7 +415,6 @@ h2.heading {
   }
 }
 
-/* Add a magical decorative element to the footer */
 .footer::before {
   content: '';
   position: absolute;
@@ -477,4 +475,23 @@ h2.heading {
     font-size: 1.6rem;
     margin-left: 1rem;
   }
+
+  /* NEW: Media query for the generate form on small screens */
+  .section-content .generate-form {
+    flex-direction: column; /* Stack elements vertically */
+    height: auto; /* Allow the height to adjust */
+    padding: 15px;
+    gap: 15px; /* Add space between the stacked items */
+  }
+
+  .section-content .prompt-input {
+    height: 40px; /* Give the input a fixed height */
+    text-align: center;
+  }
+
+  .section-content .controls {
+    width: 100%;
+    justify-content: space-between; /* Space out the dropdown and button */
+  }
 }
+
