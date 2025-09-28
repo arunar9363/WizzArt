@@ -29,11 +29,39 @@ const showError = (message) => {
   alert(message || "Something went wrong. Please try again!");
 };
 
-// ==================================================================
-// UPDATED FUNCTION TO CALL YOUR OWN BACKEND
-// ==================================================================
+// Helper function to create a pause
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+
+//FUNCTION TO HANDLE IMAGE DOWNLOADS
+const downloadImage = async (imageUrl, filename) => {
+  try {
+    // Fetch the image data as a blob
+    const response = await fetch(imageUrl);
+    const blob = await response.blob();
+
+    // Create a temporary URL for the blob
+    const url = URL.createObjectURL(blob);
+    
+    // Create a temporary anchor tag to trigger the download
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a); // Append to the body to make it clickable
+    a.click(); // Programmatically click the link
+    document.body.removeChild(a); // Clean up and remove the link
+
+    // Release the temporary URL
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Download failed:", error);
+    showError("Could not download the image.");
+  }
+};
+
+
+// FUNCTION TO CALL BACKEND
 const generateAIImage = async (userPrompt, userImgQuantity) => {
-  // The API endpoint is now your own server's route
   const API_ENDPOINT = "/api/generate";
 
   try {
@@ -46,14 +74,8 @@ const generateAIImage = async (userPrompt, userImgQuantity) => {
 
     const response = await fetch(API_ENDPOINT, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      // Send the prompt and quantity to your backend
-      body: JSON.stringify({
-        prompt: userPrompt,
-        quantity: userImgQuantity
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt: userPrompt, quantity: userImgQuantity })
     });
 
     if (!response.ok) {
@@ -61,24 +83,33 @@ const generateAIImage = async (userPrompt, userImgQuantity) => {
       throw new Error(errorData.error || "Failed to generate images.");
     }
 
-    const { images } = await response.json(); // Your backend sends back an object with an 'images' array
-
+    const { images } = await response.json();
     const imgCards = imageGallery.querySelectorAll(".img-card");
-    images.forEach((imageUrl, i) => {
-      if (i >= imgCards.length) return;
+
+    // Staggered display logic
+    let initialDelay = 1000; // 1 second for the first image
+    let delayIncrement = 500; // Add 0.5 seconds for each next image
+
+    for (let i = 0; i < images.length; i++) {
+      if (i >= imgCards.length) break;
+
+      const currentDelay = initialDelay + (i * delayIncrement);
+      await delay(currentDelay);
+
       const card = imgCards[i];
+      const imageUrl = images[i];
+      const filename = `wizz_art_${Date.now()}_${i}.png`;
+
       card.classList.remove("loading");
       card.innerHTML = `
         <img src="${imageUrl}" alt="Generated AI image">
-        <a href="${imageUrl}" download="wizz_art_${Date.now()}_${i}.png" class="download-btn">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 F0 24 24" fill="currentColor">
+        <button class="download-btn" onclick="downloadImage('${imageUrl}', '${filename}')">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 15.586l-4.293-4.293-1.414 1.414L12 18.414l5.707-5.707-1.414-1.414L12 15.586zM12 4a1 1 0 0 1 1 1v9.586l.293-.293 1.414 1.414-2.707 2.707a1 1 0 0 1-1.414 0l-2.707-2.707 1.414-1.414.293.293V5a1 1 0 0 1 1-1zM5 20h14a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2z"></path>
           </svg>
-        </a>`;
-    });
+        </button>`;
+    }
 
-    // --- SCROLL TO SPELLBOOK SECTION ---
-    // This line runs after the images are displayed and scrolls the page.
     document.getElementById('spellbook').scrollIntoView({ behavior: 'smooth' });
 
   } catch (error) {
@@ -90,11 +121,10 @@ const generateAIImage = async (userPrompt, userImgQuantity) => {
   }
 };
 
-// ==================================================================
-// THIS PART LISTENS FOR THE BUTTON CLICK.
-// ==================================================================
+
+//LISTENS FOR THE BUTTON CLICK
 generateForm.addEventListener("submit", (e) => {
-  e.preventDefault(); // This stops the page from reloading
+  e.preventDefault();
   if (isImageGenerating) {
     showError("Please wait until the current generation completes.");
     return;
@@ -110,6 +140,5 @@ generateForm.addEventListener("submit", (e) => {
     return;
   }
   
-  // This line calls the function to start generating images
   generateAIImage(userPrompt, userImgQuantity);
 });
