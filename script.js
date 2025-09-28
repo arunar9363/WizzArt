@@ -29,29 +29,28 @@ const showError = (message) => {
   alert(message || "Something went wrong. Please try again!");
 };
 
-// Helper function to create a pause
+// Helper function to create a pause in async functions
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
-
-//FUNCTION TO HANDLE IMAGE DOWNLOADS
+// Function to handle reliable image downloads
 const downloadImage = async (imageUrl, filename) => {
   try {
-    // Fetch the image data as a blob
+    // Fetch the image data as a binary object (blob)
     const response = await fetch(imageUrl);
     const blob = await response.blob();
 
-    // Create a temporary URL for the blob
+    // Create a temporary, local URL for the blob
     const url = URL.createObjectURL(blob);
     
-    // Create a temporary anchor tag to trigger the download
+    // Create a temporary link, set its properties, and click it to trigger the download
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
-    document.body.appendChild(a); // Append to the body to make it clickable
-    a.click(); // Programmatically click the link
-    document.body.removeChild(a); // Clean up and remove the link
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 
-    // Release the temporary URL
+    // Clean up the temporary URL to free memory
     URL.revokeObjectURL(url);
   } catch (error) {
     console.error("Download failed:", error);
@@ -59,19 +58,21 @@ const downloadImage = async (imageUrl, filename) => {
   }
 };
 
-
-// FUNCTION TO CALL BACKEND
+// Main function to generate images by calling the backend
 const generateAIImage = async (userPrompt, userImgQuantity) => {
+  // Use a relative path to call your backend API
   const API_ENDPOINT = "/api/generate";
 
   try {
     isImageGenerating = true;
     imageGallery.innerHTML = "";
+    // Create loading placeholders
     for (let i = 0; i < userImgQuantity; i++) {
       const imgCardHTML = `<div class="img-card loading"><img src="img/loader.svg" alt="Generating..."></div>`;
       imageGallery.insertAdjacentHTML("beforeend", imgCardHTML);
     }
 
+    // Call the backend to get the image URLs
     const response = await fetch(API_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -86,20 +87,21 @@ const generateAIImage = async (userPrompt, userImgQuantity) => {
     const { images } = await response.json();
     const imgCards = imageGallery.querySelectorAll(".img-card");
 
-    // Staggered display logic
+    // Display images one by one with a staggered delay
     let initialDelay = 1000; // 1 second for the first image
-    let delayIncrement = 500; // Add 0.5 seconds for each next image
+    let delayIncrement = 500; // Add 0.5 seconds for each subsequent image
 
     for (let i = 0; i < images.length; i++) {
       if (i >= imgCards.length) break;
 
       const currentDelay = initialDelay + (i * delayIncrement);
-      await delay(currentDelay);
+      await delay(currentDelay); // Pause execution
 
       const card = imgCards[i];
       const imageUrl = images[i];
       const filename = `wizz_art_${Date.now()}_${i}.png`;
 
+      // Update the placeholder with the final image and download button
       card.classList.remove("loading");
       card.innerHTML = `
         <img src="${imageUrl}" alt="Generated AI image">
@@ -110,6 +112,7 @@ const generateAIImage = async (userPrompt, userImgQuantity) => {
         </button>`;
     }
 
+    // Automatically scroll to the gallery after all images have appeared
     document.getElementById('spellbook').scrollIntoView({ behavior: 'smooth' });
 
   } catch (error) {
@@ -121,8 +124,7 @@ const generateAIImage = async (userPrompt, userImgQuantity) => {
   }
 };
 
-
-//LISTENS FOR THE BUTTON CLICK
+// Event listener for the generate form
 generateForm.addEventListener("submit", (e) => {
   e.preventDefault();
   if (isImageGenerating) {
