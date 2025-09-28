@@ -5,9 +5,6 @@ require('dotenv').config();
 
 const app = express();
 
-// Vercel's serverless environment doesn't need a specific PORT
-// The app.listen() part is removed
-
 app.use(cors());
 app.use(express.json());
 
@@ -43,5 +40,4 @@ app.post('/api/generate', async (req, res) => {
   }
 });
 
-// Export the app for Vercel to use
 module.exports = app;
